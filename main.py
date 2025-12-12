@@ -107,10 +107,12 @@ def preprocess_data(df, target_column='revenue'):
     
     # For categorical columns, use label encoding if present
     # Fill categorical NaN with 'Unknown' before encoding
+    encoders = {}
     for col in X.select_dtypes(include=['object']).columns:
         X[col] = X[col].fillna('Unknown')
         le = LabelEncoder()
         X[col] = le.fit_transform(X[col].astype(str))
+        encoders[col] = le
     
     print(f"Dataset shape: {X.shape}")
     print(f"Features: {list(X.columns)}")
