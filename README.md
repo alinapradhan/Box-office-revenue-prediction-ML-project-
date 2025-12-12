@@ -116,7 +116,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the terms of the LICENSE file.
+This project is licensed under MIT.
 
 ## Acknowledgments
 
