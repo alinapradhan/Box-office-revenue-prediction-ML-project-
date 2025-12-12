@@ -101,10 +101,14 @@ def preprocess_data(df, target_column='revenue'):
     X = df.drop(columns=[target_column])
     
     # Handle missing values in features
-    X = X.fillna(X.median(numeric_only=True))
+    # Fill numeric columns with median
+    numeric_cols = X.select_dtypes(include=[np.number]).columns
+    X[numeric_cols] = X[numeric_cols].fillna(X[numeric_cols].median())
     
     # For categorical columns, use label encoding if present
+    # Fill categorical NaN with 'Unknown' before encoding
     for col in X.select_dtypes(include=['object']).columns:
+        X[col] = X[col].fillna('Unknown')
         le = LabelEncoder()
         X[col] = le.fit_transform(X[col].astype(str))
     
@@ -280,12 +284,14 @@ def main():
     # Compare models
     compare_models(results)
     
-    # Example prediction with the best model (XGBoost typically performs best)
+    # Example prediction with the best model (based on lowest RMSE)
     print("\n" + "="*60)
     print("EXAMPLE PREDICTION")
     print("="*60)
     
-    best_model = models['XGBoost']  # Or choose based on results
+    # Select the best model based on RMSE
+    best_result = min(results, key=lambda x: x['rmse'])
+    best_model = models[best_result['model_name']]
     
     example_movie = {
         'budget': 150000000,
